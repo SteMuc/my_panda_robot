@@ -15,7 +15,6 @@ def generate_launch_description():
     robot_description = Command(
         [FindExecutable(name='xacro'), ' ', franka_xacro_file, ' hand:=', load_gripper])
     
-
     return LaunchDescription([
         DeclareLaunchArgument(
             load_gripper_parameter_name,
