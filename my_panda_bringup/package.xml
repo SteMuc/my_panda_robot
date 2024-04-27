@@ -1,23 +1,22 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>my_panda_description</name>
+  <name>my_panda_bringup</name>
   <version>0.0.0</version>
   <description>TODO: Package description</description>
   <maintainer email="stefanoangeli12@gmail.com">user</maintainer>
   <license>TODO: License declaration</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
-   
-  <exec_depend>launch</exec_depend>
-  <exec_depend>launch_ros</exec_depend>
-
-  <depend>xacro</depend>
-  <depend>urdf</depend>
-  <depend>franka_description</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
+   
+  <!-- <exec_depend>my_panda_moveit</exec_depend> -->
+  <exec_depend>my_panda_controller</exec_depend>
+  
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
 
   <export>
     <build_type>ament_cmake</build_type>

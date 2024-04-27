@@ -5,6 +5,9 @@
   <xacro:arg name="robot_ip" default="" /> <!-- IP address or hostname of the robot" -->
   <xacro:arg name="use_fake_hardware" default="false" />
   <xacro:arg name="fake_sensor_commands" default="false" />
+  <xacro:arg name="use_sim" default="false" />
+  <xacro:arg name="simulation_controllers_config_file"
+    default="$(find my_panda_controller)/config/joint_controller_manipulation.yaml" />
 
   <!-- box shaped table as base -->
   <link name="base">
@@ -34,7 +37,12 @@
       safety_distance="0.03" />
   </xacro:if>
 
-  <xacro:include filename="$(find my_panda_description)/robots/panda_arm.ros2_control.xacro" />
-  <xacro:panda_arm_ros2_control ns="$(arg arm_id)" robot_ip="$(arg robot_ip)"
+  <xacro:include
+    filename="$(find my_panda_description)/robots/ros2_control/panda_arm.ros2_control.xacro" />
+  <xacro:panda_arm_ros2_control 
+    ns="$(arg arm_id)" 
+    use_sim="$(arg use_sim)"
+    simulation_controllers_config_file="$(arg simulation_controllers_config_file)"
+    robot_ip="$(arg robot_ip)"
     use_fake_hardware="$(arg use_fake_hardware)" fake_sensor_commands="$(arg fake_sensor_commands)" />
 </robot>

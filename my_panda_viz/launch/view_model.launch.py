@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import os
 import sys
 
@@ -14,7 +16,9 @@ def generate_launch_description():
     # Declare the launch argument for load_gripper_value
     load_gripper_value_launch_arg = DeclareLaunchArgument(
         'load_gripper_value',
-        default_value='true'
+        default_value='false',
+        description='Use Franka Gripper as end-effector if true. Robot is loaded without '
+                        'end-effector otherwise'
     )
     
     rviz_file = os.path.join(get_package_share_directory('my_panda_viz'), 'rviz',
@@ -25,7 +29,7 @@ def generate_launch_description():
         executable='joint_state_publisher_gui',
         name='joint_state_publisher_gui'
     )
-
+    
     node_rviz = Node(
         package='rviz2',
         executable='rviz2',
@@ -51,3 +55,5 @@ def generate_launch_description():
             launch_franka_description,
         ]
     )
+    
+    ##https://answers.ros.org/question/322874/ros2-what-is-different-between-declarelaunchargument-and-launchconfiguration/

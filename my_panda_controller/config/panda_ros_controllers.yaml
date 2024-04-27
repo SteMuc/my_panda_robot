@@ -1,0 +1,63 @@
+simulation_ignition_ros_control:
+  ros__parameters:
+    use_sim_time: true
+
+# Separate controller manager used for simulation - only difference is 
+# the use_sim_time parameter (it is the easiest way to do it with ign ros2 control)  
+simulation_controller_manager:
+  ros__parameters:
+    use_sim_time: true
+    update_rate: 1000 # Hz
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+    panda_arm_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+controller_manager:
+  ros__parameters:
+    use_sim_time: false
+    update_rate: 1000 # Hz
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+    panda_arm_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+panda_arm_controller:
+  ros__parameters:
+    joints:
+      - panda_joint1
+      - panda_joint2
+      - panda_joint3
+      - panda_joint4
+      - panda_joint5
+      - panda_joint6
+      - panda_joint7
+    gains:
+      panda_joint1: { p: 600., d: 30., i: 0., i_clamp: 1. }
+      panda_joint2: { p: 600., d: 30., i: 0., i_clamp: 1. }
+      panda_joint3: { p: 600., d: 30., i: 0., i_clamp: 1. }
+      panda_joint4: { p: 600., d: 30., i: 0., i_clamp: 1. }
+      panda_joint5: { p: 250., d: 10., i: 0., i_clamp: 1. }
+      panda_joint6: { p: 150., d: 10., i: 0., i_clamp: 1. }
+      panda_joint7: { p: 50., d: 5., i: 0., i_clamp: 1. }
+
+    command_interfaces:
+      - position
+
+    state_interfaces:
+      - position
+      - velocity
+
+    state_publish_rate: 50.0 # Defaults to 50
+    action_monitor_rate: 20.0 # Defaults to 20
+
+    allow_partial_joints_goal: false # Defaults to false
+    open_loop_control: true
+    allow_integration_in_goal_trajectories: true
+    constraints:
+      stopped_velocity_tolerance: 0.0 # Defaults to 0.01
+      goal_time: 0.0 # Defaults to 0.0 (start immediately)
+
+
