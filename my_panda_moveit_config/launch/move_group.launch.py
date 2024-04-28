@@ -27,7 +27,7 @@ from launch.substitutions import (
     FindExecutable,
     LaunchConfiguration,
 )
-from launch_ros.actions import Node
+from launch_ros.actions import Node, SetParameter
 import yaml
 
 
@@ -48,11 +48,15 @@ def generate_launch_description():
     robot_ip_parameter_name = 'robot_ip'
     use_fake_hardware_parameter_name = 'use_fake_hardware'
     fake_sensor_commands_parameter_name = 'fake_sensor_commands'
+    use_sim_parameter_name = 'use_sim'
+    load_gripper_parameter_name = 'load_gripper'
 
     robot_ip = LaunchConfiguration(robot_ip_parameter_name)
     use_fake_hardware = LaunchConfiguration(use_fake_hardware_parameter_name)
     fake_sensor_commands = LaunchConfiguration(fake_sensor_commands_parameter_name)
-
+    use_sim = LaunchConfiguration(use_sim_parameter_name)
+    load_gripper = LaunchConfiguration(load_gripper_parameter_name)
+    
     # Command-line arguments
     db_arg = DeclareLaunchArgument(
         'db', default_value='False', description='Database flag'
@@ -69,13 +73,16 @@ def generate_launch_description():
             FindExecutable(name='xacro'),
             ' ',
             franka_xacro_file,
-            ' hand:=true',
+            ' hand:=',
+            load_gripper,
             ' robot_ip:=',
             robot_ip,
             ' use_fake_hardware:=',
             use_fake_hardware,
             ' fake_sensor_commands:=',
             fake_sensor_commands,
+            'use_sim:=',
+             use_sim
         ]
     )
 
@@ -87,7 +94,7 @@ def generate_launch_description():
         'panda_arm.srdf.xacro',
     )
     robot_description_semantic_config = Command(
-        [FindExecutable(name='xacro'), ' ', franka_semantic_xacro_file, ' hand:=true']
+        [FindExecutable(name='xacro'), ' ', franka_semantic_xacro_file, ' hand:=', load_gripper]
     )
     robot_description_semantic = {
         'robot_description_semantic': robot_description_semantic_config
@@ -109,5 +116,6 @@ def generate_launch_description():
         [
             db_arg,
             run_move_group_node,
+            SetParameter(name="use_sim_time", value=use_sim)
         ]
     )

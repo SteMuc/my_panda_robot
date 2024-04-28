@@ -26,6 +26,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
+from launch.conditions import IfCondition
 import yaml
 
 
@@ -44,11 +45,15 @@ def generate_launch_description():
     robot_ip_parameter_name = 'robot_ip'
     use_fake_hardware_parameter_name = 'use_fake_hardware'
     fake_sensor_commands_parameter_name = 'fake_sensor_commands'
-
+    load_gripper_parameter_name = 'load_gripper'
+    use_sim_parameter_name = 'use_sim'
+    
     robot_ip = LaunchConfiguration(robot_ip_parameter_name)
     use_fake_hardware = LaunchConfiguration(use_fake_hardware_parameter_name)
     fake_sensor_commands = LaunchConfiguration(fake_sensor_commands_parameter_name)
-
+    load_gripper = LaunchConfiguration(load_gripper_parameter_name)
+    use_sim = LaunchConfiguration(use_sim_parameter_name)
+    
     # Command-line arguments
 
     db_arg = DeclareLaunchArgument(
@@ -59,7 +64,7 @@ def generate_launch_description():
     franka_xacro_file = os.path.join(get_package_share_directory('my_panda_description'), 'robots',
                                      'panda_arm.urdf.xacro')
     robot_description_config = Command(
-        [FindExecutable(name='xacro'), ' ', franka_xacro_file, ' hand:=true',
+        [FindExecutable(name='xacro'), ' ', franka_xacro_file, ' hand:=', load_gripper,
          ' robot_ip:=', robot_ip, ' use_fake_hardware:=', use_fake_hardware,
          ' fake_sensor_commands:=', fake_sensor_commands])
 
@@ -69,7 +74,7 @@ def generate_launch_description():
                                               'srdf',
                                               'panda_arm.srdf.xacro')
     robot_description_semantic_config = Command(
-        [FindExecutable(name='xacro'), ' ', franka_semantic_xacro_file, ' hand:=true']
+        [FindExecutable(name='xacro'), ' ', franka_semantic_xacro_file, ' hand:=', load_gripper]
     )
     robot_description_semantic = {
         'robot_description_semantic': robot_description_semantic_config
@@ -221,16 +226,30 @@ def generate_launch_description():
         default_value='false',
         description="Fake sensor commands. Only valid when '{}' is true".format(
             use_fake_hardware_parameter_name))
+    load_gripper_arg = DeclareLaunchArgument(
+        load_gripper_parameter_name,
+        default_value='false',
+        description="Load panda flange gripper".format(
+            load_gripper_parameter_name))
+    use_sim_arg = DeclareLaunchArgument(
+        use_sim_parameter_name,
+        default_value='false',
+        description="Use sim  for simulation".format(
+            use_sim_parameter_name))
+    
     gripper_launch_file = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([PathJoinSubstitution(
             [FindPackageShare('franka_gripper'), 'launch', 'gripper.launch.py'])]),
         launch_arguments={'robot_ip': robot_ip,
                           use_fake_hardware_parameter_name: use_fake_hardware}.items(),
+        condition=IfCondition(load_gripper),
     )
     return LaunchDescription(
         [robot_arg,
          use_fake_hardware_arg,
          fake_sensor_commands_arg,
+         load_gripper_arg,
+         use_sim_arg,
          db_arg,
          rviz_node,
          robot_state_publisher,
