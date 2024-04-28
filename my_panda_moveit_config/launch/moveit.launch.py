@@ -66,7 +66,7 @@ def generate_launch_description():
     robot_description_config = Command(
         [FindExecutable(name='xacro'), ' ', franka_xacro_file, ' hand:=', load_gripper,
          ' robot_ip:=', robot_ip, ' use_fake_hardware:=', use_fake_hardware,
-         ' fake_sensor_commands:=', fake_sensor_commands])
+         ' fake_sensor_commands:=', fake_sensor_commands, ' use_sim:=', use_sim])
 
     robot_description = {'robot_description': robot_description_config}
 
@@ -234,7 +234,7 @@ def generate_launch_description():
     use_sim_arg = DeclareLaunchArgument(
         use_sim_parameter_name,
         default_value='false',
-        description="Use sim  for simulation".format(
+        description="Use sim for simulation".format(
             use_sim_parameter_name))
     
     gripper_launch_file = IncludeLaunchDescription(

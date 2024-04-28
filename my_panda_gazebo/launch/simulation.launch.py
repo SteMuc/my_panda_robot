@@ -151,6 +151,25 @@ def generate_launch_description():
         }.items(),
     )
     
+    moveit_rviz_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            PathJoinSubstitution(
+                [
+                    get_package_share_directory("my_panda_moveit_config"),
+                    "launch",
+                    "rviz.launch.py",
+                ]
+            )
+        ),
+        launch_arguments={
+            "load_gripper": load_gripper,
+            "robot_ip": robot_ip,
+            "use_fake_hardware": use_fake_hardware,
+            "fake_sensor_commands": fake_sensor_commands,
+            "use_sim": use_sim,
+        }.items()
+    )
+    
     return LaunchDescription(
         [   declare_load_gripper_arg,
             declare_robot_ip_arg,
@@ -160,6 +179,7 @@ def generate_launch_description():
             gz_sim, ## Spawn empty world in ignition-gazebo.
             gz_spawn_entity, ## Spawn Franka Emika Robot on the table.
             bringup_launch,
+            moveit_rviz_launch,
             SetParameter(name="use_sim_time", value=True),
         ]
     )
