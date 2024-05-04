@@ -7,7 +7,7 @@
   <xacro:arg name="fake_sensor_commands" default="false" />
   <xacro:arg name="use_sim" default="false" />
   <xacro:arg name="simulation_controllers_config_file"
-    default="$(find my_panda_controller)/config/joint_controller_manipulation.yaml" />
+    default="$(find my_panda_controller)/config/panda_ros_controllers.yaml" />
 
   <!-- box shaped table as base -->
   <link name="base">
@@ -29,7 +29,7 @@
   </link>
 
   <xacro:include filename="$(find my_panda_description)/robots/panda_arm.xacro" />
-  <xacro:panda_arm arm_id="$(arg arm_id)" connected_to="base" xyz="0 0 1" safety_distance="0.03" />
+  <xacro:panda_arm arm_id="$(arg arm_id)" use_sim="$(arg use_sim)" connected_to="base" xyz="0 0 1" safety_distance="0.03" />
 
   <xacro:if value="$(arg hand)">
     <xacro:include filename="$(find my_panda_description)/robots/hand.xacro" />

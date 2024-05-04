@@ -21,7 +21,7 @@ from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
     
-    #1
+    # 1
     load_gripper = LaunchConfiguration("load_gripper")
     declare_load_gripper_arg = DeclareLaunchArgument(
         "load_gripper",
@@ -29,7 +29,7 @@ def generate_launch_description():
         description="Use Franka Gripper as end-effector if True",
     )
     
-    #2
+    # 2
     robot_ip = LaunchConfiguration("robot_ip")
     declare_robot_ip_arg = DeclareLaunchArgument(
         "robot_ip",
@@ -46,19 +46,19 @@ def generate_launch_description():
         description="Whether simulation is used",
     )
     
-    #4
+    # 4
     use_fake_hardware = LaunchConfiguration("use_fake_hardware")
     declare_use_fake_hardware_arg = DeclareLaunchArgument(
         "use_fake_hardware",
-        default_value="False",
-        description="Wheter to use fake hardware",
+        default_value="True",
+        description="Whether to use fake hardware",
     )
-    #5
+    # 5
     fake_sensor_commands = LaunchConfiguration("fake_sensor_commands")
     declare_fake_sensor_commands_arg = DeclareLaunchArgument(
         "fake_sensor_commands",
         default_value="False",
-        description="Wheter to use fake sensor commands",
+        description="Whether to use fake sensor commands",
     )
     
     ## Spawn empty world in ignition-gazebo.
@@ -103,35 +103,33 @@ def generate_launch_description():
                     "panda_arm.urdf.xacro",
                 ]
             ),
-            "hand:=",
+            " hand:=",
             load_gripper,
-            "robot_ip:=",
+            " robot_ip:=",
             robot_ip,
-            "use_sim:=",
+            " use_sim:=",
             use_sim,
-            "use_fake_hardware:=",
+            " use_fake_hardware:=",
             use_fake_hardware,
-            "fake_sensor_commands:=",
+            " fake_sensor_commands:=",
             fake_sensor_commands,
-            "simulation_controllers_config_file:=",
+            " simulation_controllers_config_file:=",
             robot_controllers,
         ]
     )
-    
+    # Spawn the Franka Arm 
     gz_spawn_entity = Node(
         package="ros_gz_sim",
         executable="create",
         arguments=[
             "-name",
             "panda_arm_manipulator",
-            "-allow_renaming",
-            "true",
             "-string",
             robot_description_content
         ],
         output="screen",
     )
-    
+    #
     bringup_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             PathJoinSubstitution(
@@ -178,8 +176,8 @@ def generate_launch_description():
             declare_fake_sensor_commands_arg,
             gz_sim, ## Spawn empty world in ignition-gazebo.
             gz_spawn_entity, ## Spawn Franka Emika Robot on the table.
-            bringup_launch,
-            moveit_rviz_launch,
+            # bringup_launch,
+            # moveit_rviz_launch,
             SetParameter(name="use_sim_time", value=True),
         ]
     )

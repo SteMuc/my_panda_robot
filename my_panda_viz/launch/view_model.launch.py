@@ -20,6 +20,12 @@ def generate_launch_description():
         description='Use Franka Gripper as end-effector if true. Robot is loaded without '
                         'end-effector otherwise'
     )
+    #  In simulation, this flag must be se to true
+    declare_use_sim_arg = DeclareLaunchArgument(
+        'use_sim',
+        default_value="True",
+        description="Whether simulation is used",
+    )
     
     rviz_file = os.path.join(get_package_share_directory('my_panda_viz'), 'rviz',
                              'visualize_franka.rviz')
@@ -45,11 +51,13 @@ def generate_launch_description():
         # launch_arguments={'load_gripper': 'false'}.items()
         
         # Pass the launch argument and its value
-        launch_arguments={'load_gripper': LaunchConfiguration('load_gripper_value')}.items()
+        launch_arguments={'load_gripper': LaunchConfiguration('load_gripper_value'),
+                          'use_sim': LaunchConfiguration('use_sim')}.items()
     )
 
     return LaunchDescription(
         [   load_gripper_value_launch_arg,
+            declare_use_sim_arg,
             node_joint_state_publisher_gui,
             node_rviz,
             launch_franka_description,

@@ -11,11 +11,14 @@ from launch_ros.actions import Node
 def generate_launch_description():
     load_gripper_parameter_name = 'load_gripper'
     load_gripper = LaunchConfiguration(load_gripper_parameter_name)
+    
+    use_sim_parameter_name = 'use_sim'
+    use_sim = LaunchConfiguration(use_sim_parameter_name)
 
     franka_xacro_file = os.path.join(get_package_share_directory('my_panda_description'), 'robots',
                                      'panda_arm.urdf.xacro')
     robot_description = Command(
-        [FindExecutable(name='xacro'), ' ', franka_xacro_file, ' hand:=', load_gripper])
+        [FindExecutable(name='xacro'), ' ', franka_xacro_file, ' hand:=', load_gripper, ' use_sim:=', use_sim])
     
     return LaunchDescription([
         DeclareLaunchArgument(
